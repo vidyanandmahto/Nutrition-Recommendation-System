@@ -189,10 +189,6 @@ jupyter notebook
 
 Engineering Student | Data Science Enthusiast | Machine Learning Learner
 
-LinkedIn: *(Add your LinkedIn profile)*
-
-GitHub: *(Add your GitHub profile)*
-
 ---
 
 ## ⭐ If you found this project useful, consider giving it a star!
