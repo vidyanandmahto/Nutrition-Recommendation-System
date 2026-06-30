@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}NutriAI — Explore{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+  <h1>🔎 Explore Foods</h1>
+  <p>Browse and search all {{ foods|length }} foods with live filters.</p>
+</section>
+
+<!-- SEARCH & FILTER BAR -->
+<form method="GET" action="/explore" class="explore-bar">
+  <input type="text" name="search" placeholder="🔍 Search food name…"
+         value="{{ search }}" class="explore-search">
+
+  <select name="cluster" class="explore-select">
+    <option value="all" {% if selected_cluster=='all' %}selected{% endif %}>All Clusters</option>
+    {% for cid, lbl in cluster_labels.items() %}
+    <option value="{{ cid }}" {% if selected_cluster==cid|string %}selected{% endif %}>
+      {{ cluster_icons[cid] }} {{ lbl }}
+    </option>
+    {% endfor %}
+  </select>
+
+  <select name="category" class="explore-select">
+    <option value="all" {% if selected_category=='all' %}selected{% endif %}>All Categories</option>
+    {% for cat in categories %}
+    <option value="{{ cat }}" {% if selected_category==cat %}selected{% endif %}>{{ cat }}</option>
+    {% endfor %}
+  </select>
+
+  <button type="submit" class="btn btn-primary">Filter</button>
+  <a href="/explore" class="btn btn-outline">Reset</a>
+</form>
+
+<!-- FOOD TABLE -->
+{% if foods %}
+<div class="table-wrapper">
+  <table class="food-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Food Name</th>
+        <th>Category</th>
+        <th>Cluster</th>
+        <th>Cal</th>
+        <th>Protein</th>
+        <th>Carbs</th>
+        <th>Fat</th>
+        <th>Iron</th>
+        <th>Vit C</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for f in foods %}
+      <tr>
+        <td class="row-num">{{ loop.index }}</td>
+        <td class="food-name-cell">{{ f.food_name }}</td>
+        <td><span class="cat-badge">{{ f.category }}</span></td>
+        <td><span class="cluster-badge c{{ f.cluster }}">{{ f.cluster_icon }} {{ f.cluster_label }}</span></td>
+        <td>{{ f.calories }}</td>
+        <td>{{ f.protein }}g</td>
+        <td>{{ f.carbs }}g</td>
+        <td>{{ f.fat }}g</td>
+        <td>{{ f.iron }}mg</td>
+        <td>{{ f.vitamin_c }}mg</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state">
+  <span>🔍</span>
+  <p>No foods found. Try a different search or filter.</p>
+</div>
+{% endif %}
+
+{% endblock %}

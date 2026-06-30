@@ -1,194 +1,200 @@
-# 🍎 Food Nutrition Clustering System using K-Means
+# 🥗 NutriAI — Nutrition Recommendation System
 
-## 📌 Project Overview
+An unsupervised machine learning web application that clusters foods by nutritional profile and recommends them based on your health goals.
 
-This project applies the **K-Means Clustering** algorithm to group foods with similar nutritional characteristics. By analyzing nutrients such as calories, protein, carbohydrates, fat, iron, and vitamin C, the model identifies meaningful food clusters that can be used in nutrition recommendation systems, diet planning applications, and health analytics.
-
-The project demonstrates the complete Machine Learning workflow, including data preprocessing, feature scaling, optimal cluster selection, model training, evaluation, visualization, and interpretation.
+Built with **KMeans Clustering** + **Flask** + **HTML/CSS**.
 
 ---
 
-## 📂 Dataset Information
+## 🚀 Live Demo
 
-- **Dataset:** Food Nutrition Dataset
-- **Total Records:** 205
-- **Total Features:** 9
-- **Data Type:** Numerical + Categorical
-- **Source:** USDA FoodData Central API
-
-### Features
-
-| Feature | Description |
-|----------|-------------|
-| food_name | Name of the food item |
-| category | Food category |
-| calories | Calories per 100g |
-| protein | Protein (g) |
-| carbs | Carbohydrates (g) |
-| fat | Fat (g) |
-| iron | Iron (mg) |
-| vitamin_c | Vitamin C (mg) |
+> Run locally by following the setup instructions below.
 
 ---
 
-# 🎯 Problem Statement
+## 📸 Screenshots
 
-Different foods contain different nutritional values. Instead of manually categorizing foods, Machine Learning can automatically identify groups of nutritionally similar foods.
-
-This project clusters foods into different nutritional groups using K-Means Clustering, making it useful for:
-
-- Nutrition Recommendation Systems
-- Diet Planning
-- Health Monitoring
-- Food Analytics
-- Fitness Applications
+| Home | Recommend | Predict | Explore |
+|------|-----------|---------|---------|
+| Cluster overview & health goals | Filter by goal, calories, protein | Enter nutrients → get cluster | Search & browse all 205 foods |
 
 ---
 
-# 🛠 Technologies Used
+## 🧠 How It Works
 
-- Python
-- Pandas
-- NumPy
-- Matplotlib
-- Seaborn
-- Scikit-learn
-- Jupyter Notebook
+1. **Data** — 205 foods across 61 categories with 6 nutritional features: `calories`, `protein`, `carbs`, `fat`, `iron`, `vitamin_c`
+2. **Feature Engineering** — 4 derived ratio features added: `protein_per_cal`, `carb_per_cal`, `fat_per_cal`, `micronutrient_score`
+3. **Scaling** — `RobustScaler` used to handle outliers better than StandardScaler
+4. **Clustering** — KMeans (k=4) trained using 3 evaluation metrics: Silhouette Score, Davies–Bouldin Index, Calinski–Harabász Index
+5. **Recommendation** — Foods ranked by distance to cluster centroid for most representative results
 
----
+### 🔵 The 4 Food Clusters
 
-# 📊 Machine Learning Workflow
-
-1. Import Libraries
-2. Load Dataset
-3. Data Exploration
-4. Data Cleaning
-5. Handle Missing Values
-6. Remove Duplicate Records
-7. Feature Selection
-8. Feature Scaling using StandardScaler
-9. Elbow Method
-10. Silhouette Score
-11. K-Means Clustering
-12. Cluster Visualization
-13. Cluster Analysis
-14. Save Clustered Dataset
+| Cluster | Label | Description |
+|---------|-------|-------------|
+| 0 | 🔥 High-Calorie Dense | Energy-dense foods high in calories and fats |
+| 1 | 🥦 Vitamin-Rich | Low-fat, high Vitamin C and micronutrient foods |
+| 2 | 💪 High-Protein Dense | Protein-packed foods for muscle support |
+| 3 | ⚖️ Balanced Light | Low-calorie, well-rounded everyday foods |
 
 ---
 
-# 📈 Data Visualization
+## ✨ Features
 
-The project includes:
+- **🏠 Home** — Cluster overview, stats, and quick goal shortcuts
+- **🍽️ Recommend** — Filter by health goal, max calories, min protein, and exclude categories
+- **🔬 Predict** — Enter any food's nutrients and classify it into a cluster with similar food suggestions
+- **🔎 Explore** — Searchable, filterable table of all 205 foods with cluster labels
 
-- Elbow Method Graph
-- Cluster Scatter Plot
-- Pair Plot
-- Cluster-wise Nutritional Analysis
-
----
-
-# 🤖 Machine Learning Algorithm
-
-## K-Means Clustering
-
-K-Means is an unsupervised machine learning algorithm that groups similar data points into clusters based on feature similarity.
-
-### Steps
-
-- Initialize cluster centroids
-- Assign data points to the nearest centroid
-- Update centroids
-- Repeat until convergence
+### 6 Health Goals Supported
+| Goal | Logic |
+|------|-------|
+| ⚖️ Weight Loss | Lowest calorie foods across all clusters |
+| 💪 Muscle Gain | Highest protein foods across all clusters |
+| 🥦 Vitamin Rich | Closest foods to Cluster 1 centroid |
+| 🍱 Balanced | Closest foods to Cluster 3 centroid |
+| 🥩 High Protein | Closest foods to Cluster 2 centroid |
+| 🔥 High Energy | Closest foods to Cluster 0 centroid |
 
 ---
 
-# 📏 Model Evaluation
-
-The optimal number of clusters was determined using:
-
-- Elbow Method
-- Silhouette Score
-
----
-
-# 📁 Project Structure
+## 🗂️ Project Structure
 
 ```
-Food-Nutrition-Clustering-System/
+NUTRITION RECOMMENDATION SYSTEM/
 │
-├── dataset/
-│   └── Food_Nutrition_Dataset.csv
+├── Data/
+│   ├── Food_Nutrition_Dataset.csv        # Original dataset
+│   └── Food_Nutrition_Clustered.csv      # Dataset with cluster labels
 │
-├── notebook/
-│   └── Food_Nutrition_Clustering.ipynb
+├── Data-clean-tool/
+│   ├── Food_Nutrition_...                # Data cleaning scripts
+│   └── Nutrition_Reco...                 # EDA & exploration notebooks
 │
-├── output/
-│   ├── Food_Nutrition_Clustered.csv
-│   ├── elbow_plot.png
-│   ├── scatter_plot.png
-│   └── pair_plot.png
+├── Model/                                # Saved model artifacts
 │
-├── README.md
-├── requirements.txt
-└── LICENSE
+├── static/
+│   ├── css/
+│   │   └── style.css                     # Dark theme responsive CSS
+│   └── js/
+│       └── main.js                       # Animations, live search, quick-fill
+│
+├── templates/
+│   ├── base.html                         # Shared navbar, footer, layout
+│   ├── index.html                        # Home page
+│   ├── results.html                      # Recommendations page
+│   ├── predict.html                      # Predict cluster page
+│   └── explore.html                      # Browse all foods page
+│
+├── app.py                                # Flask app — routes & ML logic
+├── requirements.txt                      # Python dependencies
+└── README.md
 ```
 
 ---
 
-# 🚀 Installation
+## ⚙️ Setup & Installation
 
-Clone the repository
-
+### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/Food-Nutrition-Clustering-System.git
+git clone https://github.com/your-username/nutrition-recommendation-system.git
+cd nutrition-recommendation-system
 ```
 
-Go to the project directory
-
+### 2. Create a virtual environment (recommended)
 ```bash
-cd Food-Nutrition-Clustering-System
+python -m venv venv
+
+# Windows
+venv\Scripts\activate
+
+# macOS / Linux
+source venv/bin/activate
 ```
 
-Install dependencies
-
+### 3. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-Run the notebook
-
+### 4. Run the app
 ```bash
-jupyter notebook
+python app.py
+```
+
+### 5. Open in browser
+```
+http://127.0.0.1:5000
 ```
 
 ---
 
-# 📌 Results
+## 📦 Dependencies
 
-- Successfully clustered food items based on nutritional values.
-- Identified similar foods using unsupervised learning.
-- Visualized clusters using scatter plots.
-- Evaluated clustering performance using Elbow Method and Silhouette Score.
-
----
-
-# 📚 Future Improvements
-
-- Build a Nutrition Recommendation Web App
-- Deploy using Flask or Streamlit
-- Add PCA for better visualization
-- Integrate Deep Learning-based Recommendation Systems
-- Use larger nutrition datasets
-- Deploy the model on cloud platforms
+```
+flask>=3.0.0
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+```
 
 ---
 
-# 👨‍💻 Author
+## 📊 Dataset
 
-**Vidyanand Mahto**
-
-Engineering Student | Data Science Enthusiast | Machine Learning Learner
+- **Source:** Food Nutrition Dataset (CSV)
+- **Size:** 205 foods, 8 columns
+- **Features:** `food_name`, `category`, `calories`, `protein`, `carbs`, `fat`, `iron`, `vitamin_c`
+- **Missing values:** Filled with column median
+- **Duplicates:** Removed before training
 
 ---
 
-## ⭐ If you found this project useful, consider giving it a star!
+## 🤖 ML Details
+
+| Parameter | Value |
+|-----------|-------|
+| Algorithm | KMeans |
+| Clusters (k) | 4 |
+| Scaler | RobustScaler |
+| Features | 10 (6 raw + 4 engineered) |
+| `n_init` | 20 |
+| `max_iter` | 500 |
+| `random_state` | 42 |
+
+### Evaluation Metrics (k=4)
+| Metric | Score |
+|--------|-------|
+| Silhouette Score | 0.3071 |
+| Davies–Bouldin Index | 1.2978 |
+| Calinski–Harabász | 62.13 |
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Backend | Python, Flask |
+| ML | scikit-learn, pandas, numpy |
+| Frontend | HTML5, CSS3, Vanilla JS |
+| Fonts | Google Fonts (Inter) |
+| Theme | Custom dark theme |
+
+---
+
+## 🙋 Author
+
+**Your Name**
+- GitHub: https://github.com/vidyanandmahto
+- LinkedIn: https://www.linkedin.com/in/vidyanand-mahto-b9a283301/
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License
+
+---
+
+> ⭐ If you found this project helpful, please consider giving it a star!

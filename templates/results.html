@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}NutriAI — Recommendations{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+  <h1>🍽️ Get Recommendations</h1>
+  <p>Filter by your health goal and dietary preferences.</p>
+</section>
+
+<div class="recommend-layout">
+
+  <!-- FILTER PANEL -->
+  <aside class="filter-panel">
+    <form method="POST" action="/recommend" id="filterForm">
+      <h3 class="filter-title">⚙️ Filters</h3>
+
+      <!-- Goal -->
+      <div class="form-group">
+        <label>Health Goal</label>
+        <div class="goal-pills">
+          {% for key, g in goals.items() %}
+          <input type="radio" name="goal" id="goal_{{ key }}" value="{{ key }}"
+                 {% if goal == key or (not goal and key=='balanced') %}checked{% endif %}>
+          <label for="goal_{{ key }}" class="pill">{{ g.icon }} {{ g.label }}</label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Max Calories -->
+      <div class="form-group">
+        <label for="max_calories">Max Calories</label>
+        <input type="number" id="max_calories" name="max_calories"
+               placeholder="e.g. 300" min="0" max="2000"
+               value="{{ max_calories or '' }}">
+      </div>
+
+      <!-- Min Protein -->
+      <div class="form-group">
+        <label for="min_protein">Min Protein (g)</label>
+        <input type="number" id="min_protein" name="min_protein"
+               placeholder="e.g. 5" min="0" max="50" step="0.5"
+               value="{{ min_protein or '' }}">
+      </div>
+
+      <!-- Top N -->
+      <div class="form-group">
+        <label for="top_n">Results to show</label>
+        <select name="top_n" id="top_n">
+          {% for n in [5, 10, 15, 20] %}
+          <option value="{{ n }}" {% if top_n==n %}selected{% endif %}>{{ n }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Exclude Categories -->
+      <div class="form-group">
+        <label>Exclude Categories</label>
+        <div class="checkbox-list">
+          {% for cat in categories %}
+          <label class="check-item">
+            <input type="checkbox" name="exclude_categories" value="{{ cat }}"
+                   {% if cat in exclude_categories %}checked{% endif %}>
+            {{ cat }}
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">🔍 Find Foods</button>
+      <a href="/recommend" class="btn btn-outline btn-full" style="margin-top:.5rem">Reset</a>
+    </form>
+  </aside>
+
+  <!-- RESULTS PANEL -->
+  <div class="results-panel">
+    {% if results is defined %}
+      {% if results %}
+        <div class="results-header">
+          <h2>{{ goal_info.icon }} {{ goal_info.label }} — Top {{ results|length }} Foods</h2>
+          <span class="result-count">{{ results|length }} results</span>
+        </div>
+
+        <div class="food-grid">
+          {% for food in results %}
+          <div class="food-card">
+            <div class="food-card-header">
+              <span class="food-name">{{ food.food_name }}</span>
+              <span class="food-category">{{ food.category }}</span>
+            </div>
+            <div class="nutrient-bars">
+              <div class="n-bar">
+                <span>Calories</span>
+                <div class="bar-track">
+                  <div class="bar-fill cal" style="width:{{ [food.calories/15, 100]|min }}%"></div>
+                </div>
+                <span class="n-val">{{ food.calories }}</span>
+              </div>
+              <div class="n-bar">
+                <span>Protein</span>
+                <div class="bar-track">
+                  <div class="bar-fill pro" style="width:{{ [food.protein*5, 100]|min }}%"></div>
+                </div>
+                <span class="n-val">{{ food.protein }}g</span>
+              </div>
+              <div class="n-bar">
+                <span>Carbs</span>
+                <div class="bar-track">
+                  <div class="bar-fill carb" style="width:{{ [food.carbs*1.2, 100]|min }}%"></div>
+                </div>
+                <span class="n-val">{{ food.carbs }}g</span>
+              </div>
+              <div class="n-bar">
+                <span>Fat</span>
+                <div class="bar-track">
+                  <div class="bar-fill fat" style="width:{{ [food.fat*1.5, 100]|min }}%"></div>
+                </div>
+                <span class="n-val">{{ food.fat }}g</span>
+              </div>
+            </div>
+            <div class="food-tags">
+              <span class="tag tag-c{{ food.cluster }}">{{ food.cluster_label }}</span>
+              <span class="tag tag-iron">🔩 Iron {{ food.iron }}mg</span>
+              <span class="tag tag-vitc">🍊 Vit C {{ food.vitamin_c }}mg</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+      {% else %}
+        <div class="empty-state">
+          <span>😔</span>
+          <p>No foods matched your filters. Try relaxing the constraints.</p>
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="empty-state">
+        <span>👈</span>
+        <p>Choose a goal and click <strong>Find Foods</strong> to get started.</p>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

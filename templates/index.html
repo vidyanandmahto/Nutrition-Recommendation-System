@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}NutriAI — Home{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>Smart Nutrition<br><span class="accent">Recommendations</span></h1>
+    <p>Powered by unsupervised machine learning — KMeans clustering on {{ stats.total_foods }} foods across {{ stats.total_categories }} categories.</p>
+    <div class="hero-btns">
+      <a href="/recommend" class="btn btn-primary">Get Recommendations</a>
+      <a href="/predict"   class="btn btn-outline">Predict My Food</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="orbit-ring">
+      <span class="orbit-icon" style="--i:0">🍎</span>
+      <span class="orbit-icon" style="--i:1">🥦</span>
+      <span class="orbit-icon" style="--i:2">🥩</span>
+      <span class="orbit-icon" style="--i:3">🍚</span>
+      <span class="orbit-icon" style="--i:4">🍊</span>
+      <span class="orbit-icon" style="--i:5">🥑</span>
+    </div>
+    <div class="orbit-center">🥗</div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-row">
+  <div class="stat-card">
+    <span class="stat-num">{{ stats.total_foods }}</span>
+    <span class="stat-label">Total Foods</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-num">{{ stats.total_categories }}</span>
+    <span class="stat-label">Categories</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-num">4</span>
+    <span class="stat-label">Clusters</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-num">6</span>
+    <span class="stat-label">Health Goals</span>
+  </div>
+</section>
+
+<!-- CLUSTER CARDS -->
+<section class="section">
+  <h2 class="section-title">Food Clusters</h2>
+  <p class="section-sub">Our ML model grouped all foods into 4 meaningful nutritional clusters.</p>
+  <div class="cluster-grid">
+    {% set cluster_info = {
+      0: {"icon":"🔥","name":"High-Calorie Dense","desc":"Energy-dense foods high in calories and fats.","color":"var(--red)"},
+      1: {"icon":"🥦","name":"Vitamin-Rich","desc":"Low-fat, high Vitamin C and micronutrient foods.","color":"var(--green)"},
+      2: {"icon":"💪","name":"High-Protein Dense","desc":"Protein-packed foods for muscle support.","color":"var(--blue)"},
+      3: {"icon":"⚖️","name":"Balanced Light","desc":"Low-calorie, well-rounded everyday foods.","color":"var(--orange)"}
+    } %}
+    {% for cid, info in cluster_info.items() %}
+    <div class="cluster-card" style="--accent:{{ info.color }}">
+      <div class="cluster-icon">{{ info.icon }}</div>
+      <h3>{{ info.name }}</h3>
+      <p>{{ info.desc }}</p>
+      {% for label, count in stats.cluster_counts.items() %}
+        {% if loop.index0 == cid %}
+        <span class="badge">{{ count }} foods</span>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- GOALS -->
+<section class="section section-alt">
+  <h2 class="section-title">Choose Your Health Goal</h2>
+  <p class="section-sub">Select a goal to get personalised food recommendations instantly.</p>
+  <div class="goals-grid">
+    {% for key, g in goals.items() %}
+    <a href="/recommend?goal={{ key }}" class="goal-card">
+      <span class="goal-icon">{{ g.icon }}</span>
+      <span class="goal-label">{{ g.label }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

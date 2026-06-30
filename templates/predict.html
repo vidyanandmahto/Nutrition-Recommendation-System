@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}NutriAI — Predict{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+  <h1>🔬 Predict Your Food</h1>
+  <p>Enter the nutritional values of any food and our model will classify it into a cluster.</p>
+</section>
+
+<div class="predict-layout">
+
+  <!-- INPUT FORM -->
+  <div class="predict-form-card">
+    <h3>Enter Nutritional Values</h3>
+    <form method="POST" action="/predict">
+      <div class="input-grid">
+        <div class="form-group">
+          <label for="calories">🔥 Calories (kcal)</label>
+          <input type="number" id="calories" name="calories" placeholder="e.g. 120"
+                 step="0.1" min="0" required
+                 value="{{ request.form.calories or '' }}">
+        </div>
+        <div class="form-group">
+          <label for="protein">💪 Protein (g)</label>
+          <input type="number" id="protein" name="protein" placeholder="e.g. 8"
+                 step="0.1" min="0" required
+                 value="{{ request.form.protein or '' }}">
+        </div>
+        <div class="form-group">
+          <label for="carbs">🍞 Carbs (g)</label>
+          <input type="number" id="carbs" name="carbs" placeholder="e.g. 15"
+                 step="0.1" min="0" required
+                 value="{{ request.form.carbs or '' }}">
+        </div>
+        <div class="form-group">
+          <label for="fat">🧈 Fat (g)</label>
+          <input type="number" id="fat" name="fat" placeholder="e.g. 4"
+                 step="0.1" min="0" required
+                 value="{{ request.form.fat or '' }}">
+        </div>
+        <div class="form-group">
+          <label for="iron">🔩 Iron (mg)</label>
+          <input type="number" id="iron" name="iron" placeholder="e.g. 1.2"
+                 step="0.01" min="0" required
+                 value="{{ request.form.iron or '' }}">
+        </div>
+        <div class="form-group">
+          <label for="vitamin_c">🍊 Vitamin C (mg)</label>
+          <input type="number" id="vitamin_c" name="vitamin_c" placeholder="e.g. 12"
+                 step="0.1" min="0" required
+                 value="{{ request.form.vitamin_c or '' }}">
+        </div>
+      </div>
+
+      <!-- Quick-fill examples -->
+      <div class="examples">
+        <span class="examples-label">Quick fill:</span>
+        <button type="button" class="example-btn"
+          data-vals="120,8,15,4,1.2,12">🥚 Egg-like</button>
+        <button type="button" class="example-btn"
+          data-vals="50,1,12,0.2,0.3,60">🍊 Citrus-like</button>
+        <button type="button" class="example-btn"
+          data-vals="492,17.8,0,18,3.5,2">🥩 Meat-like</button>
+        <button type="button" class="example-btn"
+          data-vals="350,5,45,14,1,5">🍕 Snack-like</button>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">🔍 Predict Cluster</button>
+    </form>
+  </div>
+
+  <!-- RESULT -->
+  {% if result %}
+  <div class="predict-result">
+    {% if result.error is defined %}
+      <div class="error-box">❌ Error: {{ result.error }}</div>
+    {% else %}
+      <div class="result-cluster-card">
+        <div class="result-icon">{{ result.cluster_icon }}</div>
+        <div>
+          <div class="result-cluster-name">Cluster {{ result.cluster }}</div>
+          <div class="result-cluster-label">{{ result.cluster_label }}</div>
+          <p class="result-cluster-desc">{{ result.cluster_desc }}</p>
+        </div>
+      </div>
+
+      <h4>🍽️ Similar Foods in this Cluster</h4>
+      <div class="similar-list">
+        {% for f in result.similar %}
+        <div class="similar-item">
+          <div>
+            <div class="similar-name">{{ f.food_name }}</div>
+            <div class="similar-cat">{{ f.category }}</div>
+          </div>
+          <div class="similar-stats">
+            <span>{{ f.calories }} kcal</span>
+            <span>{{ f.protein }}g protein</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
