@@ -185,7 +185,7 @@ scikit-learn>=1.3.0
 
 ## 🙋 Author
 
-**Your Name**
+**Vidyanand Mahto**
 - GitHub: https://github.com/vidyanandmahto
 - LinkedIn: https://www.linkedin.com/in/vidyanand-mahto-b9a283301/
 
